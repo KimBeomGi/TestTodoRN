@@ -25,6 +25,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import HeadComponent1 from './componenets/HeadComponent1';
+import TodoScreen1 from './screens/TodoScreen1';
+import TodoScreen2 from './screens/TodoScreen2';
+
+
+type StackParamList = {
+  HomeScreen: undefined;
+  TodoScreen1: undefined;
+  TodoScreen2: undefined;
+  // TodoScreen1: { userId: string };
+  // TodoScreen2: { sort: 'latest' | 'top' } | undefined;
+};
+
 
 const Stack = createNativeStackNavigator();
 
@@ -45,10 +57,27 @@ function App(): React.JSX.Element {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
-              name="Home" 
+              name="HomeScreen" 
               component={HomeScreen} 
               options={{
-                headerShown: false
+                headerShown: false,
+                animation: 'none'
+              }}
+              />
+            <Stack.Screen
+              name="TodoScreen1" 
+              component={TodoScreen1} 
+              options={{
+                headerShown: false,
+                animation: 'slide_from_left'
+              }}
+            />
+            <Stack.Screen
+              name="TodoScreen2" 
+              component={TodoScreen2} 
+              options={{
+                headerShown: false,
+                animation: 'slide_from_bottom'
               }}
             />
           </Stack.Navigator>
