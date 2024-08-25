@@ -27,18 +27,10 @@ import HomeScreen from './screens/HomeScreen';
 import HeadComponent1 from './componenets/HeadComponent1';
 import TodoScreen1 from './screens/TodoScreen1';
 import TodoScreen2 from './screens/TodoScreen2';
+import { StackParamList } from './componenets/types/mainType';
 
 
-type StackParamList = {
-  HomeScreen: undefined;
-  TodoScreen1: undefined;
-  TodoScreen2: undefined;
-  // TodoScreen1: { userId: string };
-  // TodoScreen2: { sort: 'latest' | 'top' } | undefined;
-};
-
-
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<StackParamList>();
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -55,7 +47,7 @@ function App(): React.JSX.Element {
         style={styles.mainContainer}
       >
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
+          <Stack.Navigator initialRouteName="HomeScreen">
             <Stack.Screen
               name="HomeScreen" 
               component={HomeScreen} 
