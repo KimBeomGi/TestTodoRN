@@ -28,21 +28,40 @@ import HeadComponent1 from './componenets/HeadComponent1';
 import TodoScreen1 from './screens/TodoScreen1';
 import TodoScreen2 from './screens/TodoScreen2';
 import { StackParamList } from './componenets/types/mainType';
-
+import LoginScreen from './screens/LoginScreen';
+import CreateScreen from './screens/CreateScreen';
+import auth, { FirebaseAuthTypes, onAuthStateChanged } from '@react-native-firebase/auth';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-
+  
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  
+  // const [initializing, setInitializing] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  
+  useEffect(() => {
+    auth().onAuthStateChanged(userState => {
+      setUser(userState);
+
+      if (loading) {
+        setLoading(false);
+      }
+    });
+  }, []);
+
+
 
 
   return (
     <>
       <HeadComponent1/>
+      <View><Text>Welcome {user ? user.email : '익명'}</Text></View>
       <View
         style={styles.mainContainer}
       >
@@ -70,6 +89,22 @@ function App(): React.JSX.Element {
               options={{
                 headerShown: false,
                 animation: 'slide_from_bottom'
+              }}
+            />
+            <Stack.Screen
+              name="LoginScreen" 
+              component={LoginScreen} 
+              options={{
+                headerShown: false,
+                animation: 'none'
+              }}
+            />
+            <Stack.Screen
+              name="CreateScreen" 
+              component={CreateScreen}
+              options={{
+                headerShown: false,
+                animation: 'none'
               }}
             />
           </Stack.Navigator>
