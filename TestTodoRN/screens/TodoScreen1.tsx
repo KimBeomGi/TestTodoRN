@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import database, { firebase } from '@react-native-firebase/database';
 
-import { Button, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Button, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../componenets/types/mainType';
 
@@ -30,7 +30,7 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
       await todoCollection.add({
         createdAt: Date.now(),
         status: 'no',
-        value: todoInputValue
+        value: todoInputValue,
       });
       setTodoInputValue('');
       console.log('Create Complete!');
@@ -111,8 +111,27 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
       status: chagnedStauts
     })
   }
-  
 
+  const handleDeleteTodo = (id:string, value:string) => {
+    Alert.alert(`${value}`, `해당 할 일을 삭제하시겠습니까?`, [
+      {
+        text: 'Cancel',
+        onPress: () => {
+          // console.log('Cancel Pressed')
+        },
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => {
+        todoCollection.doc(id).delete().then(() => {
+          console.log(`${value} 삭제완료`)
+        })
+        // console.log('OK Pressed')
+      }},
+    ]);
+    
+  }
+
+  
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>TodoScreen1</Text>
@@ -166,6 +185,14 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
                       : '😀'
                   }</Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  handleDeleteTodo(item.id, item.value)
+                }}
+              >
+                <Text style={styles.textItem}>🗑️</Text>
+              </TouchableOpacity>
+
             </View>
           )
         }}
@@ -192,7 +219,7 @@ const styles = StyleSheet.create({
   textItem: {
     marginHorizontal: 5,  // 텍스트 간의 간격
     marginVertical: 10,
-    fontSize: 22,
+    fontSize: 14,
     color: '#000000'
   },
 });
