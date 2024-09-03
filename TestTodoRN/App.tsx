@@ -21,6 +21,10 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { store } from './store/store'
+import { Provider } from 'react-redux'
+
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
@@ -33,14 +37,13 @@ import CreateScreen from './screens/CreateScreen';
 import auth, { FirebaseAuthTypes, onAuthStateChanged } from '@react-native-firebase/auth';
 
 const Stack = createNativeStackNavigator<StackParamList>();
-
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  
+
   // const [initializing, setInitializing] = useState(true);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
@@ -55,11 +58,8 @@ function App(): React.JSX.Element {
     });
   }, []);
 
-
-
-
   return (
-    <>
+    <Provider store={store}>
       <HeadComponent1/>
       <View><Text>Welcome {user ? user.email : '익명'}</Text></View>
       <View
@@ -110,7 +110,7 @@ function App(): React.JSX.Element {
           </Stack.Navigator>
         </NavigationContainer>
       </View>
-    </>
+    </Provider>
   );
 }
 

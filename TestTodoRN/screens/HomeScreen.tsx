@@ -4,6 +4,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../componenets/types/mainType';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { fbSignOut } from '../componenets/firebase/auth';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { decrement, increment, incrementByAmount } from '../store/features/counter/counterSlice';
 
 
 export type HomeScreenProps = NativeStackScreenProps<StackParamList, "HomeScreen">
@@ -20,10 +22,27 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
     }
   }
 
+  const count = useAppSelector((state) => state.counter.value)
+  const dispatch = useAppDispatch()
+  
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
       <Text>홈 스크린</Text>
+      <Text>{count}</Text>
+      <Button
+        title='+'
+        onPress={() => {dispatch(increment())}}
+        />
+      <Button
+        title='-'
+        onPress={() => {dispatch(decrement())}}
+      />
+      <Button
+        title='+5'
+        onPress={() => {dispatch(incrementByAmount(5))}}
+      />
       <Button
         title='할 일 화면으로 넘어가기'
         onPress={() => {
