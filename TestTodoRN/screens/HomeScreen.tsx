@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View, ViewComponent } from "react-native";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../componenets/types/mainType';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { fbSignOut } from '../componenets/firebase/auth';
+import { fbDeleteUser, fbSignOut } from '../componenets/firebase/auth';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { decrement, increment, incrementByAmount } from '../store/features/counter/counterSlice';
 
@@ -12,6 +12,12 @@ export type HomeScreenProps = NativeStackScreenProps<StackParamList, "HomeScreen
 
 export default function HomeScreen({navigation} : HomeScreenProps) {
   // let user = auth().currentUser
+  const count = useAppSelector((state) => state.counter.value)
+  const user = useAppSelector((state) => state.auth.user)
+  console.log('이것이 user다', user)
+  const dispatch = useAppDispatch()
+
+
   const handleFirebaseSignOut = async () => {
     try {
       await fbSignOut()
@@ -22,10 +28,15 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
     }
   }
 
-  const count = useAppSelector((state) => state.counter.value)
-  const user = useAppSelector((state) => state.auth.user)
-  console.log('이것이 user다', user)
-  const dispatch = useAppDispatch()
+  const handleFirebaseDeleteUser = async () => {
+    try {
+      await fbDeleteUser()
+      console.log('된다.')
+    } catch (error) {
+      console.log(error)
+      console.log('안된다.')
+    }
+  }
   
 
   return (
@@ -60,12 +71,22 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
       />
       { user
         ?
-        <Button
-          title='로그아웃'
-          onPress={() => {
-            handleFirebaseSignOut()
-          }}
-        />
+        <View>
+          <Button
+            title='로그아웃'
+            onPress={() => {
+              handleFirebaseSignOut()
+            }}
+          />
+          <Button
+            title='회원탈퇴'
+            onPress={() => {
+              handleFirebaseDeleteUser()
+            }}
+          />
+        
+        </View>
+
         :
         <Button
         title='로그인'

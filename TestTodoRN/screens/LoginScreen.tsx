@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Image, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../componenets/types/mainType';
-import { fbSignIn } from '../componenets/firebase/auth';
+import { fbGoogleSignIn, fbSignIn } from '../componenets/firebase/auth';
 
 export type LoginScreenProps = NativeStackScreenProps<StackParamList, "LoginScreen">
 
@@ -24,6 +24,14 @@ export default function LoginScreen({navigation} :LoginScreenProps) {
     }
   }
 
+  const handleFirebaseGoogleSignIn = async () => {
+    try {
+      await fbGoogleSignIn()
+    } catch (error) {
+      console.log(error)      
+    }
+  }
+  
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>LoginScreen</Text>
@@ -61,11 +69,22 @@ export default function LoginScreen({navigation} :LoginScreenProps) {
           navigation.navigate("CreateScreen")
         }}
       />
-      <Button
+      {/* <Button
         title='구글로 로그인'
         color="#fb837f"
-        onPress={() => {}}
-      />
+        onPress={() => {
+          // Alert.alert('하잇')
+          handleFirebaseGoogleSignIn()
+        }}
+      /> */}
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => {
+          handleFirebaseGoogleSignIn()
+        }}
+      >
+        <Image source={require('../src/images/googlebtn1.png')} />
+      </TouchableOpacity>
     </View>
   );
 }
