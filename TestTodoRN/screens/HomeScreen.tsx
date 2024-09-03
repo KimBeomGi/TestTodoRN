@@ -11,7 +11,7 @@ import { decrement, increment, incrementByAmount } from '../store/features/count
 export type HomeScreenProps = NativeStackScreenProps<StackParamList, "HomeScreen">
 
 export default function HomeScreen({navigation} : HomeScreenProps) {
-  let user = auth().currentUser
+  // let user = auth().currentUser
   const handleFirebaseSignOut = async () => {
     try {
       await fbSignOut()
@@ -23,14 +23,16 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
   }
 
   const count = useAppSelector((state) => state.counter.value)
+  const user = useAppSelector((state) => state.auth.user)
+  console.log('이것이 user다', user)
   const dispatch = useAppDispatch()
   
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Text>홈 스크린</Text>
-      <Text>{count}</Text>
+      {/* <Text>Home Screen</Text> */}
+      {/* <Text>홈 스크린</Text> */}
+      {/* <Text>{count}</Text>
       <Button
         title='+'
         onPress={() => {dispatch(increment())}}
@@ -42,7 +44,8 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
       <Button
         title='+5'
         onPress={() => {dispatch(incrementByAmount(5))}}
-      />
+      /> */}
+      <View><Text>Welcome {user ? user.email : '익명'}</Text></View>
       <Button
         title='할 일 화면으로 넘어가기'
         onPress={() => {
@@ -71,7 +74,6 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
         }}
         />
       }
-      
     </View>
   );
 }

@@ -22,7 +22,7 @@ export default function CreateScreen({navigation} :CreateScreenProps) {
     if(email_regex.test(idValue) && (pw1Value === pw2Value) &&  pw_regex.test(pw1Value) && pw_regex.test(pw2Value)){
       try {
         await fbsignUp(idValue, pw1Value)
-        navigation.navigate('HomeScreen')
+        // navigation.navigate('HomeScreen')
       } catch (error) {
         console.log(error)
         Alert.alert('회원가입 실패', '회원가입에 실패했습니다. 다시 시도해주세요.')
@@ -48,7 +48,7 @@ export default function CreateScreen({navigation} :CreateScreenProps) {
           borderBottomWidth: 1,
         }}
         ref={emailRef}
-        placeholder='아이디'
+        placeholder='이메일'
         keyboardType='email-address'
         autoCapitalize="none"
         value={idValue}

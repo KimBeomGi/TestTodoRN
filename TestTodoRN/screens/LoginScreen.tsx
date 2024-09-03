@@ -18,7 +18,7 @@ export default function LoginScreen({navigation} :LoginScreenProps) {
     try {
       console.log(emailValue, pwValue)
       await fbSignIn(emailValue, pwValue)
-      navigation.navigate("HomeScreen")
+      // navigation.navigate("HomeScreen")
     } catch (error) {
       console.log(error)
     }

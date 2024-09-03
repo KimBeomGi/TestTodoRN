@@ -1,3 +1,5 @@
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
+
 export type StackParamList = {
   HomeScreen: undefined;
   TodoScreen1: undefined;
