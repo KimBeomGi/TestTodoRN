@@ -5,7 +5,9 @@ import { Alert, Button, FlatList, ScrollView, StyleSheet, Text, TextInput, Touch
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../componenets/types/mainType';
 
-import firestore from '@react-native-firebase/firestore';
+import firestore, { Filter } from '@react-native-firebase/firestore';
+import { useAppSelector } from '../store/hooks';
+import { reauthenticateWithPopup } from '@react-native-firebase/auth';
 
 export type TodoScreen1Props = NativeStackScreenProps<StackParamList, "TodoScreen1">
 type Todo = {
@@ -16,7 +18,9 @@ type Todo = {
 };
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+
 export default function TodoScreen1({navigation} :TodoScreen1Props) {
+  const user = useAppSelector((state) => state.auth.user)
   const todoInputRef = useRef<TextInput>(null);
   const [todoInputValue, setTodoInputValue] = useState("");
   const [todos, setTodos] = useState<Todo[]>([])
@@ -25,12 +29,15 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
   const todoCollection = firestore().collection('todos')
 
   const addTodo = async () => {
-
+    if(!user){
+      return
+    }
     try {
       await todoCollection.add({
         createdAt: Date.now(),
         status: 'no',
         value: todoInputValue,
+        userid: user.uid
       });
       setTodoInputValue('');
       console.log('Create Complete!');
@@ -39,40 +46,15 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
     }
   };
 
-  // const callTodoData = async () => {
-  //   try {
-  //     const data = await todoCollection.orderBy('createdAt', 'desc').get();
-  //     const todos_data = data.docs.map(doc => {
-  //       const docData = doc.data()
-  //       const theDate = new Date(docData.createdAt)
-  //       const year = theDate.getFullYear()
-  //       const month = theDate.getMonth()+1
-  //       const date = theDate.getDate()
-  //       const day = weekDays[theDate.getDay()]
-  //       const hours = theDate.getHours()
-  //       const minutes = theDate.getMinutes()
-  //       return {
-  //         // ...docData,
-  //         id: doc.id,
-  //         createdAt: `${year}.${month}.${date}(${day}) ${hours}:${minutes}`,
-  //         value: docData.value, // 추가
-  //         status: docData.status, // 추가
-  //       };
-  //     });
-  //     console.log(todos_data)
-  //     setTodos(todos_data)
-  //     console.log(todos_data);
-  //   } catch (error:any) {
-  //     console.log(error.message);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   callTodoData()
-  // }, [])
-
   useEffect(() => {
-    const unsubscribe = todoCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+    if (!user) {
+      return
+    }
+    // where와 orderBy에서 문제가 생겼는데, 이는 firebase 컬렉션의 색인에서 해결해야한다.
+    const unsubscribe = todoCollection
+    .where(Filter('userid', '==', user.uid))
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snapshot => {
       const todos_data = snapshot.docs.map(doc => {
         const docData = doc.data();
         const theDate = new Date(docData.createdAt);
@@ -95,7 +77,7 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
   
     // 컴포넌트가 언마운트될 때 구독 해제
     return () => unsubscribe();
-  }, []);
+  }, [])
 
   const handleStatus = (id:string, status:string) => {
     console.log(id, status)
