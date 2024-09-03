@@ -1,6 +1,5 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useEffect, useState } from 'react';
 
 type ProfileUpdates = {
   displayName : string;

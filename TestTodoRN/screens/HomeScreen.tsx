@@ -7,8 +7,8 @@ import { fbDeleteUser, fbSignOut } from '../componenets/firebase/auth';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { decrement, increment, incrementByAmount } from '../store/features/counter/counterSlice';
 
-
 export type HomeScreenProps = NativeStackScreenProps<StackParamList, "HomeScreen">
+
 
 export default function HomeScreen({navigation} : HomeScreenProps) {
   // let user = auth().currentUser
@@ -17,6 +17,7 @@ export default function HomeScreen({navigation} : HomeScreenProps) {
   console.log('이것이 user다', user)
   const dispatch = useAppDispatch()
 
+  
 
   const handleFirebaseSignOut = async () => {
     try {
