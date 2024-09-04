@@ -52,8 +52,8 @@ export default function TodoScreen1({navigation} :TodoScreen1Props) {
     }
     // where와 orderBy에서 문제가 생겼는데, 이는 firebase 컬렉션의 색인에서 해결해야한다.
     const unsubscribe = todoCollection
-    .where(Filter('userid', '==', user.uid))
-    .orderBy('createdAt', 'desc')
+    .where(Filter('userid', '==', user.uid))  // 현재 userid와 동일한 것만
+    .orderBy('createdAt', 'desc') // 먼저 만들어진 날짜가 제일 아래로
     .onSnapshot(snapshot => {
       const todos_data = snapshot.docs.map(doc => {
         const docData = doc.data();

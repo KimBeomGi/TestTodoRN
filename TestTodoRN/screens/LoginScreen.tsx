@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Image, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { Alert, Button, Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../componenets/types/mainType';
 import { fbGoogleSignIn, fbSignIn } from '../componenets/firebase/auth';
@@ -16,19 +16,53 @@ export default function LoginScreen({navigation} :LoginScreenProps) {
       return
     }
     try {
-      console.log(emailValue, pwValue)
       await fbSignIn(emailValue, pwValue)
       // navigation.navigate("HomeScreen")
-    } catch (error) {
-      console.log(error)
+      ToastAndroid.show('로그인에 성공하셨습니다.', ToastAndroid.SHORT);
+    } catch (error:any) {
+      console.log(error.code)
+      let errorMsg
+      switch (error.code) {
+        case "auth/user-not-found" || "auth/wrong-password":
+          errorMsg = "이메일 혹은 비밀번호가 일치하지 않습니다.";
+          break
+        case "auth/email-already-in-use":
+          errorMsg = "이미 사용 중인 이메일입니다.";
+          break
+        case "auth/weak-password":
+          errorMsg = "비밀번호는 6글자 이상이어야 합니다.";
+          break
+        case "auth/network-request-failed":
+          errorMsg = "네트워크 연결에 실패 하였습니다.";
+          break
+        case "auth/invalid-email":
+          errorMsg = "잘못된 이메일 형식입니다.";
+          break
+        case "auth/internal-error":
+          errorMsg = "잘못된 요청입니다.";
+          break
+        case "auth/invalid-credential":
+          errorMsg = "이메일과 비밀번호를 다시 확인해주세요."
+          break
+        case "auth/too-many-requests":
+          errorMsg = "로그인 시도횟수를 초과했습니다. 잠시 후 시도해주세요."
+          break
+        default:
+          errorMsg = "로그인에 실패 하였습니다.";
+          break
+      }
+      // Alert.alert(`${errorMsg}`)
+      ToastAndroid.show(`${errorMsg}`, ToastAndroid.SHORT);
     }
   }
 
   const handleFirebaseGoogleSignIn = async () => {
     try {
       await fbGoogleSignIn()
+      ToastAndroid.show('로그인에 성공하셨습니다.', ToastAndroid.SHORT);
     } catch (error) {
-      console.log(error)      
+      console.log(error)
+      ToastAndroid.show('로그인에 실패하셨습니다.', ToastAndroid.SHORT);
     }
   }
   
@@ -69,14 +103,6 @@ export default function LoginScreen({navigation} :LoginScreenProps) {
           navigation.navigate("CreateScreen")
         }}
       />
-      {/* <Button
-        title='구글로 로그인'
-        color="#fb837f"
-        onPress={() => {
-          // Alert.alert('하잇')
-          handleFirebaseGoogleSignIn()
-        }}
-      /> */}
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={() => {
